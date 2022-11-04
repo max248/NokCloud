@@ -3,12 +3,16 @@ package uz.softlife.my.cloud;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import uz.softlife.my.cloud.Ingredient.Type;
+
+import javax.validation.Valid;
+
 @Slf4j
 @Controller
 @RequestMapping("/design")
@@ -47,8 +51,11 @@ public class DesignNokController {
         return "design";
     }
     @PostMapping
-    public String processNok(Nok nok,
+    public String processNok(@Valid Nok nok, Errors errors,
                               @ModelAttribute NokOrder nokOrder) {
+        if(errors.hasErrors()){
+            return "design";
+        }
         nokOrder.addNok(nok);
         log.info("Processing nok: {}", nok);
         return "redirect:/orders/current";
